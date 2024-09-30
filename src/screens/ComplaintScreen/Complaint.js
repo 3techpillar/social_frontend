@@ -4,7 +4,7 @@ import React from 'react'
 const Complaint = () => {
   return (
     <View>
-      <Text>Complaint</Text>
+      <Text>Hello, this is complain page</Text>
     </View>
   )
 }
