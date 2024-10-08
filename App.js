@@ -1,17 +1,33 @@
-import { View } from 'react-native';
 import React from 'react';
+import { View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'; // This must wrap your app
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import BottomTabNavigator from './src/navigation/MainTabNavigator'
+import Header from './src/components/Header';
 
-import AuthStack from './src/navigation/AuthStack';
-import MainTabNavigator from './src/navigation/MainTabNavigator';
+// Drawer Navigator
+const Drawer = createDrawerNavigator();
+function DrawerNavigator() {
+  return (
+    <Drawer.Navigator initialRouteName="Tabs">
+      <Drawer.Screen name="Tabs" component={BottomTabNavigator} options={{
+        headerStyle: { backgroundColor: '#cbd5e1' },
+        headerLeft: () => (
+          <View className='pl-5'>
+            <Header />
+          </View>
+        ),
+      }} />
+    </Drawer.Navigator>
+  );
+}
 
 const App = () => {
   return (
-    <View className="bg-white-700 w-full h-full">
-
-      {/* <AuthStack/> */}
-      <MainTabNavigator />
-    </View>
-  ); 
+    <NavigationContainer>
+      <DrawerNavigator />
+    </NavigationContainer>
+  );
 };
 
 export default App;
