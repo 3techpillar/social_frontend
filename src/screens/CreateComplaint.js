@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,28 +8,28 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker'; // Import image picker methods
-import sendIcon from '../../assets/icon/send.png';
-import GalleryIcon from '../../assets/icon/camera.png';
-import Logo from '../components/Logo';
+import { useNavigation } from '@react-navigation/native';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker'; // Import image picker methods
+import sendIcon from '../../assets/icon/send.png'; // Your send icon
+import GalleryIcon from '../../assets/icon/camera.png'; // Your camera icon
+import EmojiPicker from 'emoji-picker-react';
 
-export default function CreatePost() {
+export default function CreateComplaint() {
   const navigation = useNavigation();
 
   // State management
-  const [postText, setPostText] = useState('');
+  const [complaintText, setComplaintText] = useState('');
   const [images, setImages] = useState([]);
 
-  // Function to handle post submission
-  const handlePost = async () => {
-    if (postText.trim() === '') {
-      Alert.alert('Validation Error', 'Post text cannot be empty');
+  // Function to handle complaint submission
+  const handleComplaint = async () => {
+    if (complaintText.trim() === '') {
+      Alert.alert('Validation Error', 'Complaint text cannot be empty');
       return;
     }
 
     const formData = new FormData();
-    formData.append('text', postText);
+    formData.append('text', complaintText);
     images.forEach((image, index) => {
       formData.append(`image${index}`, {
         uri: image.uri,
@@ -38,8 +38,9 @@ export default function CreatePost() {
       });
     });
 
+    // Example API request (replace with your actual endpoint)
     try {
-      const response = await fetch('https://yourapiendpoint.com/posts', {
+      const response = await fetch('https://yourapiendpoint.com/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -49,23 +50,23 @@ export default function CreatePost() {
 
       const result = await response.json();
       if (response.ok) {
-        Alert.alert('Success', 'Post created successfully');
-        setPostText('');
+        Alert.alert('Success', 'Complaint submitted successfully');
+        setComplaintText('');
         setImages([]);
         navigation.goBack();
       } else {
-        Alert.alert('Error', result.message || 'Failed to create post');
+        Alert.alert('Error', result.message || 'Failed to submit complaint');
       }
     } catch (error) {
-      console.error('Error posting:', error);
-      Alert.alert('Error', 'An error occurred while creating the post');
+      console.error('Error submitting complaint:', error);
+      Alert.alert('Error', 'An error occurred while submitting the complaint');
     }
   };
 
   // Function to pick images from the gallery
   const pickImages = () => {
     launchImageLibrary(
-      {mediaType: 'photo', quality: 1, selectionLimit: 4},
+      { mediaType: 'photo', quality: 1, selectionLimit: 4 },
       response => {
         if (response.didCancel) {
           console.log('User cancelled image picker');
@@ -82,7 +83,7 @@ export default function CreatePost() {
   // Function to open the camera
   const openCamera = () => {
     launchCamera(
-      {mediaType: 'photo', cameraType: 'back', quality: 1},
+      { mediaType: 'photo', quality: 1 },
       response => {
         if (response.didCancel) {
           console.log('User cancelled camera');
@@ -108,10 +109,10 @@ export default function CreatePost() {
             className="h-10 w-10 rounded-full"
           />
 
-          <Text className="font-bold text-lg ">Create a Post</Text>
+          <Text className="font-bold text-lg">Create a Complaint</Text>
 
-          <TouchableOpacity onPress={handlePost}>
-            <Logo source={sendIcon} />
+          <TouchableOpacity onPress={handleComplaint}>
+            <Image source={sendIcon} className="h-6 w-6" />
           </TouchableOpacity>
         </View>
       </View>
@@ -120,29 +121,31 @@ export default function CreatePost() {
       <View className="p-4">
         <TextInput
           className="text-lg"
-          placeholder="What's happening?"
-          value={postText}
-          onChangeText={setPostText}
+          placeholder="What's your complaint?"
+          value={complaintText}
+          onChangeText={setComplaintText}
           multiline
         />
       </View>
 
-      {/* Image Previews */}
+      {/* Image Previews with Labels */}
       <ScrollView horizontal className="p-4">
         {images.length > 0 &&
           images.map((image, index) => (
-            <Image
-              key={index}
-              source={{uri: image.uri}}
-              className="h-20 w-20 mr-2 rounded-lg"
-            />
+            <View key={index} className="mr-2">
+              <Image
+                source={{ uri: image.uri }}
+                className="h-20 w-20 rounded-lg"
+              />
+              <Text className="text-xs text-gray-500 text-center "> Complaint </Text>
+            </View>
           ))}
       </ScrollView>
 
       {/* Footer Section with options */}
       <View className="flex-row justify-around p-3 border-t border-gray-200">
         <TouchableOpacity onPress={pickImages}>
-          <View className="items-center">
+          <View className='items-center'>
             <Image
               source={require('../../assets/icon/gallery.png')}
               className="h-6 w-6"
@@ -150,7 +153,6 @@ export default function CreatePost() {
             <Text className="text-blue-500">Gallery</Text>
           </View>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={openCamera}>
           <View className="items-center">
             <Image source={GalleryIcon} className="h-6 w-6" />

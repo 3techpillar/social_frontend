@@ -1,6 +1,9 @@
 import * as React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Image, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import useAuthStore from '../store/authStore';
 
 import home from '../../assets/icon/home.png';
 import post from '../../assets/icon/post.png';
@@ -16,71 +19,67 @@ import accountActive from '../../assets/icon/account1.png';
 
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SinglePostScreen from '../screens/SinglePostScreen';
-
 import AccountScreen from '../screens/AccountScreen/AccountScreen';
-import Complaint from '../screens/ComplaintScreen/Complaint';
+import ComplaintScreen from '../screens/ComplaintScreen/Complaint';
 import Wallet from '../screens/WalletScreen/wallet';
-import {Image, KeyboardAvoidingView, Platform, View} from 'react-native';
-import Header from '../components/Header';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CreatePost from '../screens/CreatePost';
 import PostScreen from '../screens/PostScreen/Post';
+import CreateComplaint from '../screens/CreateComplaint';
+import Header from '../components/Header';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const TabIcon = ({source}) => (
+const TabIcon = ({ source }) => (
   <View className={'flex flex-row justify-center items-center rounded-full'}>
-    <Image
-      source={source}
-      tintColor="white"
-      resizeMode="contain"
-      className="w-6 h-6"
-    />
+    <Image source={source} tintColor="white" resizeMode="contain" className="w-6 h-6" />
   </View>
 );
 
+// Home Stack Navigation
 const HomeStackNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="home"
-        component={HomeScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="SinglePost"
-        component={SinglePostScreen}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SinglePost" component={SinglePostScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
 
+// Post Stack Navigation
 const PostStackNavigator = () => {
+  const { isLoggedIn } = useAuthStore();
+  
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="post"
-        component={PostScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CreatePost"
-        component={CreatePost}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="post" component={PostScreen} options={{ headerShown: false }} />
+      {/* Protecting CreatePost if not logged in */}
+      {isLoggedIn && <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false }} />}
     </Stack.Navigator>
   );
 };
 
+// Complaint Stack Navigation
+const ComplaintStackNavigator = () => {
+  const { isLoggedIn } = useAuthStore();
+  
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="complaint" component={ComplaintScreen} options={{ headerShown: false }} />
+      {/* Protecting CreateComplaint if not logged in */}
+      {isLoggedIn && <Stack.Screen name="CreateComplaint" component={CreateComplaint} options={{ headerShown: false }} />}
+    </Stack.Navigator>
+  );
+};
 
 export default function MainTabNavigator() {
+  const { isLoggedIn } = useAuthStore();
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
-          tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
+          tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
           tabBarActiveTintColor: '#0C8CE9',
           tabBarInactiveTintColor: 'white',
           tabBarStyle: {
@@ -89,7 +88,8 @@ export default function MainTabNavigator() {
             paddingBottom: 5,
             height: 60,
           },
-        }}>
+        }}
+      >
         {/* Home Screen */}
         <Tab.Screen
           name="Home"
@@ -98,14 +98,8 @@ export default function MainTabNavigator() {
             header: () => <Header isAccount={false} />, // Passing isAccount as false for non-account pages
             tabBarIcon: ({focused}) => (
               <TabIcon source={focused ? homeActive : home} />
-            ),
-          }}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              // Reset the navigation stack to HomeScreen
-              navigation.navigate('home', { screen: 'HomeScreen' });
-            },
-          })}
+
+  )}}
         />
 
         {/* Post Screen */}
@@ -113,28 +107,18 @@ export default function MainTabNavigator() {
           name="Post"
           component={PostStackNavigator}
           options={{
-            header: () => <Header isAccount={false} />,
-            tabBarIcon: ({focused}) => (
-              <TabIcon source={focused ? postActive : post} />
-            ),
+            header: () => <Header isAccount={false}/>,
+            tabBarIcon: ({ focused }) => <TabIcon source={focused ? postActive : post} />,
           }}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              // Reset the navigation stack to PostScreen
-              navigation.navigate('Post', { screen: 'PostScreen' });
-            },
-          })}
         />
 
         {/* Complaint Screen */}
         <Tab.Screen
           name="Complaint"
-          component={Complaint}
+          component={ComplaintStackNavigator}
           options={{
-            header: () => <Header isAccount={false} />, // Same header for Complaint screen
-            tabBarIcon: ({focused}) => (
-              <TabIcon source={focused ? complaintActive : complaint} />
-            ),
+            header: () => <Header isAccount={false}/>,
+            tabBarIcon: ({ focused }) => <TabIcon source={focused ? complaintActive : complaint} />,
           }}
         />
 
@@ -143,10 +127,8 @@ export default function MainTabNavigator() {
           name="Wallet"
           component={Wallet}
           options={{
-            header: () => <Header isAccount={false} />, // Same header for Wallet screen
-            tabBarIcon: ({focused}) => (
-              <TabIcon source={focused ? walletActive : wallet} />
-            ),
+            header: () => <Header isAccount={false}/>,
+            tabBarIcon: ({ focused }) => <TabIcon source={focused ? walletActive : wallet} />,
           }}
         />
 
@@ -155,10 +137,8 @@ export default function MainTabNavigator() {
           name="Account"
           component={AccountScreen}
           options={{
-            header: () => <Header isAccount={true} username="John Doe" />, // Custom header for Account screen
-            tabBarIcon: ({focused}) => (
-              <TabIcon source={focused ? accountActive : account} />
-            ),
+            header: () => <Header isAccount={false}/>,
+            tabBarIcon: ({ focused }) => <TabIcon source={focused ? accountActive : account} />,
           }}
         />
       </Tab.Navigator>
