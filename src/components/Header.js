@@ -5,6 +5,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  Pressable,
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 
@@ -15,11 +16,15 @@ import Logo from './Logo';
 import menu from '../../assets/icon/menu.png';
 import close from '../../assets/icon/close.png';
 import MenuItem from './MenuItem';
+import { useNavigation } from '@react-navigation/native';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
 
 const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 
 const Header = ({isAccount, username}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigation = useNavigation()
+
   const slideAnim = useRef(
     new Animated.Value(isAccount ? screenWidth : -screenWidth),
   ).current; // Start position off-screen (left)
@@ -58,6 +63,10 @@ const Header = ({isAccount, username}) => {
     }
   };
 
+  const homeNavigate = () => {
+    navigation.navigate("home")
+  }
+
   return (
     <View className="w-full px-5 py-3 bg-slate-300 flex flex-row items-center justify-between">
       {/* Left side - Menu */}
@@ -74,7 +83,9 @@ const Header = ({isAccount, username}) => {
         {isAccount ? (
           <Text className="text-lg font-bold"></Text>
         ) : (
-          <Image source={LogoImage} alt="logo" className="h-10 w-10" />
+          <Pressable onPress={homeNavigate}>
+            <Image source={LogoImage} alt="logo" className="h-10 w-10" />
+            </Pressable>
         )}
       </View>
 

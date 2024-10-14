@@ -14,7 +14,6 @@ const ForgotPassword = () => {
   const onSendPressed = () => {
     // console.warn('onSendPressed  ');
     navigation.navigate('ChangePassword');
-
   };
   const onSignInPressed = () => {
     navigation.navigate('Signin');

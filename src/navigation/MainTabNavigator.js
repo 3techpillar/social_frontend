@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { Image, View } from 'react-native';
+import { Image, Settings, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useAuthStore from '../store/authStore';
 
@@ -26,6 +26,9 @@ import CreatePost from '../screens/CreatePost';
 import PostScreen from '../screens/PostScreen/Post';
 import CreateComplaint from '../screens/CreateComplaint';
 import Header from '../components/Header';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import SettingsScreen from '../screens/Settings';
+import ContactScreen from '../screens/ContactScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -68,6 +71,21 @@ const ComplaintStackNavigator = () => {
       <Stack.Screen name="complaint" component={ComplaintScreen} options={{ headerShown: false }} />
       {/* Protecting CreateComplaint if not logged in */}
       {isLoggedIn && <Stack.Screen name="CreateComplaint" component={CreateComplaint} options={{ headerShown: false }} />}
+    </Stack.Navigator>
+  );
+};
+
+// Account edit profile Stack Navigation
+const AccountStackNavigator = () => {
+  const { isLoggedIn } = useAuthStore();
+  
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+      {/* Protecting CreatePost if not logged in */}
+      {isLoggedIn && <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />}
+      {isLoggedIn && <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />}
+      {isLoggedIn && <Stack.Screen name="ContactScreen" component={ContactScreen} options={{ headerShown: false }} />}
     </Stack.Navigator>
   );
 };
@@ -135,7 +153,7 @@ export default function MainTabNavigator() {
         {/* Account Screen */}
         <Tab.Screen
           name="Account"
-          component={AccountScreen}
+          component={AccountStackNavigator}
           options={{
             header: () => <Header isAccount={false}/>,
             tabBarIcon: ({ focused }) => <TabIcon source={focused ? accountActive : account} />,

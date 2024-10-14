@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker'; // Import image picker methods
+import { useNavigation } from '@react-navigation/native';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import sendIcon from '../../assets/icon/send.png';
 import GalleryIcon from '../../assets/icon/camera.png';
 import Logo from '../components/Logo';
@@ -41,9 +41,6 @@ export default function CreatePost() {
     try {
       const response = await fetch('https://yourapiendpoint.com/posts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
         body: formData,
       });
 
@@ -65,7 +62,7 @@ export default function CreatePost() {
   // Function to pick images from the gallery
   const pickImages = () => {
     launchImageLibrary(
-      {mediaType: 'photo', quality: 1, selectionLimit: 4},
+      { mediaType: 'photo', quality: 1, selectionLimit: 4 },
       response => {
         if (response.didCancel) {
           console.log('User cancelled image picker');
@@ -82,7 +79,7 @@ export default function CreatePost() {
   // Function to open the camera
   const openCamera = () => {
     launchCamera(
-      {mediaType: 'photo', cameraType: 'back', quality: 1},
+      { mediaType: 'photo', cameraType: 'back', quality: 1 },
       response => {
         if (response.didCancel) {
           console.log('User cancelled camera');
@@ -90,7 +87,7 @@ export default function CreatePost() {
           console.error('Camera Error: ', response.error);
         } else {
           const assets = response.assets;
-          setImages([...images, ...assets]); // Add the captured image to the list of images
+          setImages([...images, ...assets]); // Ensure previous images are retained
         }
       },
     );
@@ -133,7 +130,7 @@ export default function CreatePost() {
           images.map((image, index) => (
             <Image
               key={index}
-              source={{uri: image.uri}}
+              source={{ uri: image.uri }}
               className="h-20 w-20 mr-2 rounded-lg"
             />
           ))}

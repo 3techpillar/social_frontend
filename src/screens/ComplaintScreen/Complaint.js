@@ -5,7 +5,6 @@ import {posts} from '../../data/data';
 import HandleUpload from '../../components/HandleUpload';
 import complaintFlag from '../../../assets/icon/flag.png';
 
-
 const ComplaintScreen = () => {
   return (
     <View className="relative flex-1 bg-[#6d74f1]">

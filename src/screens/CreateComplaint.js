@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { launchImageLibrary, launchCamera } from 'react-native-image-picker'; // Import image picker methods
+import {useNavigation} from '@react-navigation/native';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker'; // Import image picker methods
 import sendIcon from '../../assets/icon/send.png'; // Your send icon
 import GalleryIcon from '../../assets/icon/camera.png'; // Your camera icon
 import EmojiPicker from 'emoji-picker-react';
@@ -66,7 +66,7 @@ export default function CreateComplaint() {
   // Function to pick images from the gallery
   const pickImages = () => {
     launchImageLibrary(
-      { mediaType: 'photo', quality: 1, selectionLimit: 4 },
+      {mediaType: 'photo', quality: 1, selectionLimit: 4},
       response => {
         if (response.didCancel) {
           console.log('User cancelled image picker');
@@ -82,19 +82,16 @@ export default function CreateComplaint() {
 
   // Function to open the camera
   const openCamera = () => {
-    launchCamera(
-      { mediaType: 'photo', quality: 1 },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled camera');
-        } else if (response.error) {
-          console.error('Camera Error: ', response.error);
-        } else {
-          const assets = response.assets;
-          setImages([...images, ...assets]); // Add the captured image to the list of images
-        }
-      },
-    );
+    launchCamera({mediaType: 'photo', quality: 1}, response => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.error) {
+        console.error('Camera Error: ', response.error);
+      } else {
+        const assets = response.assets;
+        setImages([...images, ...assets]); // Add the captured image to the list of images
+      }
+    });
   };
 
   return (
@@ -134,10 +131,13 @@ export default function CreateComplaint() {
           images.map((image, index) => (
             <View key={index} className="mr-2">
               <Image
-                source={{ uri: image.uri }}
+                source={{uri: image.uri}}
                 className="h-20 w-20 rounded-lg"
               />
-              <Text className="text-xs text-gray-500 text-center "> Complaint </Text>
+              <Text className="text-xs text-gray-500 text-center ">
+                {' '}
+                Complaint{' '}
+              </Text>
             </View>
           ))}
       </ScrollView>
@@ -145,7 +145,7 @@ export default function CreateComplaint() {
       {/* Footer Section with options */}
       <View className="flex-row justify-around p-3 border-t border-gray-200">
         <TouchableOpacity onPress={pickImages}>
-          <View className='items-center'>
+          <View className="items-center">
             <Image
               source={require('../../assets/icon/gallery.png')}
               className="h-6 w-6"

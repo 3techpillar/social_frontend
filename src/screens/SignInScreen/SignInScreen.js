@@ -1,4 +1,4 @@
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import Google from '../../../assets/images/google.png';
 import CustomInput from '../../components/CustomInput';
@@ -8,31 +8,84 @@ import Heading from '../../components/Heading';
 import {useNavigation} from '@react-navigation/native';
 
 const SignInScreen = () => {
-  //{navigation}
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
-  const onSignInPressed = () => {
-    navigation.navigate('HomeScreen');
+  // Function to validate email format
+  const validateEmail = (email) => {
+    const regex = /\S+@\S+\.\S+/;
+    return regex.test(email);
   };
+
+  // Validation function
+  const validateForm = () => {
+    if (!Email || !Password) {
+      Alert.alert('Error', 'Please fill in both fields');
+      return false;
+    }
+    if (!validateEmail(Email)) {
+      Alert.alert('Error', 'Please enter a valid email');
+      return false;
+    }
+    return true;
+  };
+
+  // Simulate API call to sign in user
+  const onSignInPressed = async () => {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    
+    try {
+      // Make an API call here
+      const response = await fetch('https://yourapi.com/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: Email,
+          password: Password,
+        }),
+      });
+      
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success: navigate to the HomeScreen
+        navigation.navigate('HomeScreen');
+      } else {
+        // Handle error
+        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onForgotpasswordPressed = () => {
     navigation.navigate('ForgotPassword');
   };
+
   const onSignUpPressed = () => {
     navigation.navigate('Signup');
   };
+
   const onSignInGoogle = () => {
     console.warn('Sign In Google');
   };
-  return (
 
+  return (
     <ScrollView showsVerticalScrollIndicator={false} className="w-full h-full">
       <View className="relative w-full h-screen flex flex-col items-center justify-center">
-        <View className='absolute -top-64 -right-48 w-[500px] h-[500px] bg-[#c7daf8] rounded-full'></View>
-        <View className='absolute -top-64 -right-48 w-[550px] h-[550px] border border-[#c7daf8] rounded-full'></View>
-        <View className='absolute -top-64 -right-48 w-[600px] h-[600px] border border-[#c7daf8] rounded-full'></View>
+        <View className="absolute -top-64 -right-48 w-[500px] h-[500px] bg-[#c7daf8] rounded-full"></View>
+        <View className="absolute -top-64 -right-48 w-[550px] h-[550px] border border-[#c7daf8] rounded-full"></View>
+        <View className="absolute -top-64 -right-48 w-[600px] h-[600px] border border-[#c7daf8] rounded-full"></View>
         <View className="w-full">
           <View className="mx-3">
             <Heading
@@ -45,8 +98,6 @@ const SignInScreen = () => {
               setvalue={setEmail}
               type="email-address"
             />
-            {/* <CustomInput placeholder="Email" type="email-address"/>
-     <CustomInput placeholder="Phone" type="number-pad"/> */}
             <CustomInput
               placeholder="Password"
               value={Password}
@@ -55,8 +106,9 @@ const SignInScreen = () => {
             />
             <CustomButton
               classname="bg-primary text-white"
-              text="Login"
+              text={loading ? 'Logging in...' : 'Login'}
               onPress={onSignInPressed}
+              disabled={loading}
             />
             <Text
               onPress={onForgotpasswordPressed}
