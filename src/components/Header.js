@@ -16,14 +16,15 @@ import Logo from './Logo';
 import menu from '../../assets/icon/menu.png';
 import close from '../../assets/icon/close.png';
 import MenuItem from './MenuItem';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import SearchScreen from '../screens/SearchScreen';
 
 const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 
 const Header = ({isAccount, username}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const slideAnim = useRef(
     new Animated.Value(isAccount ? screenWidth : -screenWidth),
@@ -64,8 +65,16 @@ const Header = ({isAccount, username}) => {
   };
 
   const homeNavigate = () => {
-    navigation.navigate("home")
-  }
+    navigation.navigate('home');
+  };
+
+  const handleSearchPress = () => {
+    navigation.navigate('search');
+  };
+
+  const handleNotificationPress = () => {
+    navigation.navigate('NotificationScreen');
+  };
 
   return (
     <View className="w-full px-5 py-3 bg-slate-300 flex flex-row items-center justify-between">
@@ -85,17 +94,17 @@ const Header = ({isAccount, username}) => {
         ) : (
           <Pressable onPress={homeNavigate}>
             <Image source={LogoImage} alt="logo" className="h-10 w-10" />
-            </Pressable>
+          </Pressable>
         )}
       </View>
 
       {/* Right side - Search and Notifications (Hidden on Account screen) */}
       {!isAccount ? (
         <View className="w-1/3 flex flex-row items-center justify-end gap-4">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleSearchPress}>
             <Logo source={search} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleNotificationPress}>
             <Logo source={notification} />
           </TouchableOpacity>
         </View>
@@ -136,6 +145,7 @@ const Header = ({isAccount, username}) => {
           zIndex: 10,
           padding: 16,
         }}>
+
         {/* Close Button */}
         <TouchableOpacity
           onPress={handleMenuPress}
@@ -146,8 +156,20 @@ const Header = ({isAccount, username}) => {
         {/* Menu Content */}
         <View className="mt-12">
           <View className=" p-4 text-xl font-bold mt-8">
-            <MenuItem text={isAccount ? 'Saved Posts' : 'Create Post'} />
-            <MenuItem text={'Create complaint'} />
+            <MenuItem
+              onPress={() => {
+                navigation.navigate('CreatePost');
+                handleMenuPress(); // Close menu after navigation
+              }}
+              text={isAccount ? 'Saved Posts' : 'Create Post'}
+            />
+            <MenuItem
+              onPress={() => {
+                navigation.navigate('CreateComplaint');
+                handleMenuPress(); // Close menu after navigation
+              }}
+              text={'Create Complaint'}
+            />
           </View>
         </View>
       </Animated.View>

@@ -1,11 +1,11 @@
-import {View, Text} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React from 'react';
 
-const MenuItem = ({text}) => {
+const MenuItem = ({text, onPress}) => {
   return (
-    <View className='mt-1'>
+    <Pressable onPress={onPress} className='mt-1'>
       <Text className='text-xl font-semibold '>{text}</Text>
-    </View>
+    </Pressable>
   );
 };
 

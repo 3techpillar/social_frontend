@@ -29,6 +29,8 @@ import Header from '../components/Header';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import SettingsScreen from '../screens/Settings';
 import ContactScreen from '../screens/ContactScreen';
+import SearchScreen from '../screens/SearchScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,6 +47,8 @@ const HomeStackNavigator = () => {
     <Stack.Navigator>
       <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SinglePost" component={SinglePostScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="search" component={SearchScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -62,7 +66,6 @@ const PostStackNavigator = () => {
   );
 };
 
-// Complaint Stack Navigation
 const ComplaintStackNavigator = () => {
   const { isLoggedIn } = useAuthStore();
   
